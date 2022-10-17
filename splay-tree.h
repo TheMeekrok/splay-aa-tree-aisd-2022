@@ -175,7 +175,6 @@ private:
             std::cout << " ";
 
         std::cout << node->key << "\n";
-                  //<< "(p: " << ((node->parent == nullptr) ? 0 : node->parent->key) << ")" << std::endl;
 
         _print_2D(node->left, space);
     }
