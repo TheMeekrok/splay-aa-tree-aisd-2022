@@ -3,45 +3,49 @@
 
 #include "splay-tree.h"
 #include "aa-tree.h"
+#include "test_generate.h"
+#include "tester.h"
 
 using namespace std;
 
 int main() {
-    auto *t = new AATree<string>();
-
-    ifstream input("test03.txt");
-    ofstream output("output.txt");
-
-    string action;
-    while (input >> action) {
-        string key;
-        bool expected;
-        if (action == "access") {
-            input >> key >> expected;
-
-            output << "access " << key;
-            if (t->access(key))
-                output << " RESULT: " << key << "\n";
-            else
-                output << " NOT FOUND \n";
-        }
-        else if (action == "insert") {
-            input >> key;
-            t->insert(key);
-
-            output << "insert " << key << "\n";
+    test_generate("./tests/01.in", 50000);
+    run_tests("./tests/01.in", "./tests/01.out", "./tests/01.out");
+//    auto *t = new AATree<string>();
+//
+//    ifstream input("test03.txt");
+//    ofstream output("output.txt");
+//
+//    string action;
+//    while (input >> action) {
+//        string key;
+//        bool expected;
+//        if (action == "access") {
+//            input >> key >> expected;
+//
+//            output << "access " << key;
+//            if (t->access(key))
+//                output << " RESULT: " << key << "\n";
+//            else
+//                output << " NOT FOUND \n";
+//        }
+//        else if (action == "insert") {
+//            input >> key;
+//            t->insert(key);
+//
+//            output << "insert " << key << "\n";
 //            if (t->root->key == key)
 //                output << " SUCCESSFUL \n";
 //            else
 //                output << " FAILED \n";
-        }
-        else if (action == "erase") {
-            input >> key;
-            t->erase(key);
-        }
-    }
-
-    t->print_2D();
+//        }
+//        else if (action == "erase") {
+//            input >> key;
+//            t->erase(key);
+//        }
+//    }
+//
+//    t->print_2D();
 
 //    auto *aa = new AATree<int>();
 //    aa->insert(8);

@@ -184,11 +184,14 @@ public:
         this->root = nullptr;
     }
 
-    Node* access(T key) {
-        this->root = this->_access(key, this->root);
+    bool access(T key) {
+        Node* node = this->_access(key, this->root);
+        if (node != nullptr && node->key == key)
+            return true;
+        return false;
     }
 
-    bool insert(T key) {
+    void insert(T key) {
         this->root = this->_insert(key, this->root);
     }
 
