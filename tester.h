@@ -27,7 +27,7 @@ void run_tests(std::string input_file, std::string output_file, std::string answ
         }
         else if (input_string == "access") {
             input >> key;
-            S->access(key);
+            //S->access(key);
             //output << "Key " << key << (S->access(key) ? " found\n" : " not found\n");
         }
     }
@@ -51,7 +51,7 @@ void run_tests(std::string input_file, std::string output_file, std::string answ
         }
         else if (input_string == "access") {
             input >> key;
-            AA->access(key);
+            //AA->access(key);
             //output << "Key " << key << (AA->access(key) ? " found\n" : " not found\n");
         }
     }
