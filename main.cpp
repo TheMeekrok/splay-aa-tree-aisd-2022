@@ -11,6 +11,8 @@ using namespace std;
 int main() {
     test_generate("./tests/01.in", 10000);
     run_tests("./tests/01.in", "./tests/01.out", "./tests/01.out");
+
+
 //    auto *t = new AATree<string>();
 //
 //    ifstream input("test03.txt");
