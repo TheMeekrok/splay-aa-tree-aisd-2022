@@ -1,13 +1,8 @@
-#Splay and AA trees
+# Splay and AA trees
 
-type this in *main.cpp* to generate tests:
-
-```cpp
-#include "test_generate";
-
-int main() {
-    ...
-    test_generate();
-    ...
-}
+Run testing (5 tests):
+```
+cd splay-aa-tree
+g++ -o run_tests.exe run_tests.cpp
+./run_tests [aa/splay]
 ```

@@ -17,6 +17,8 @@ private:
         }
     } Node;
 
+    uint64_t _comparisons = 0;
+
     void _left_rotate(Node* x) {
         if (x == this->root)
             return;
@@ -124,8 +126,10 @@ private:
         if (node == nullptr)
             return node;
 
-        while (node->right != nullptr)
+        while (node->right != nullptr) {
             node = node->right;
+            this->_comparisons++;
+        }
 
         return node;
     }
@@ -155,6 +159,8 @@ private:
                 this->_splay(node);
                 return node;
             }
+
+            this->_comparisons++;
         }
 
         return nullptr;
@@ -202,8 +208,10 @@ public:
 
     bool access(T key) {
         Node* result = this->_access(key);
+
         if (result != nullptr && result->key == key)
             return true;
+
         return false;
     }
 
@@ -225,6 +233,8 @@ public:
                 node = node->right;
             else
                 return;
+
+            this->_comparisons++;
         }
 
         Node* new_node = new Node(key, parent);
@@ -246,6 +256,8 @@ public:
         Node* t1 = node->left;
         Node* t2 = node->right;
 
+        Node* parent = node->parent;
+
         if (t1 != nullptr && t2 != nullptr) {
             this->root = this->_join(t1, t2);
         }
@@ -263,7 +275,14 @@ public:
 
         delete node;
 
+        if (parent != nullptr)
+            this->_splay(parent);
+
         return true;
+    }
+
+    uint64_t get_comparisons() {
+        return this->_comparisons;
     }
 
     void print_2D() {

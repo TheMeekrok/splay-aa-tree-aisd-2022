@@ -1,13 +1,15 @@
 #ifndef SPLAY_AA_TREE_AA_TREE_H
 #define SPLAY_AA_TREE_AA_TREE_H
 
+#include <iostream>
+
 template <typename T> class AATree {
-public:
+private:
     typedef struct Node {
         T key;
         struct Node* left;
         struct Node* right;
-        ushort level;
+        unsigned int level;
 
         Node (T key) {
             this->key = key;
@@ -17,27 +19,12 @@ public:
         }
     } Node;
 
-    const int PRINT_DIST = 5;
-    void _print_2D(Node* node, int space = 0) {
-        if (node == nullptr)
-            return;
-
-        space += PRINT_DIST;
-
-        _print_2D(node->right, space);
-
-        std::cout << std::endl;
-
-        for (int i = PRINT_DIST; i < space; i++)
-            std::cout << " ";
-
-        std::cout << node->key << "(l: " << node->level << ")\n";
-
-        _print_2D(node->left, space);
-    }
-
     Node* root;
+    unsigned int _insert_ops = 0;
+    unsigned int _access_ops = 0;
+    unsigned int _erase_ops = 0;
 
+    // O(1)
     Node* _right_rotate(Node* node) {
         Node* left = node->left;
         node->left = left->right;
@@ -46,6 +33,7 @@ public:
         return left;
     }
 
+    // O(1)
     Node* _left_rotate(Node* node) {
         Node* right = node->right;
         node->right = right->left;
@@ -54,6 +42,7 @@ public:
         return right;
     }
 
+    // O(1)
     Node* _skew(Node* node) {
         if (node == nullptr)
             return node;
@@ -66,6 +55,7 @@ public:
         return node;
     }
 
+    // O(1)
     Node* _split(Node* node) {
         if (node == nullptr)
             return node;
@@ -79,30 +69,37 @@ public:
         return node;
     }
 
-    Node* _access(T key, Node* node) {
-        if (node == nullptr)
-            return nullptr;
+    // Time depends on number of elements
+    Node* _access(T key) {
+        Node* node = this->root;
 
-        if (node->key < key)
-            node->left = _access(key, node->left);
-        else if (node->key > key)
-            node->right = _access(key, node->right);
-        else
-            return node;
+        while (node != nullptr) {
+            // Adding 1 comparison
+            this->_access_ops++;
 
-        return node;
+            if (key < node->key)
+                node = node->left;
+            else if (key > node->key)
+                node = node->right;
+            else
+                return node;
+        }
+
+        return nullptr;
     }
 
+    // Time depends on number of elements
     Node* _insert(T key, Node* node) {
         if (node == nullptr)
             return new Node(key);
+
+        // Adding 1 comparison
+         this->_insert_ops++;
 
         if (key < node->key)
             node->left = _insert(key, node->left);
         else if (key > node->key)
             node->right = _insert(key, node->right);
-        else
-            return node;
 
         node = this->_skew(node);
         node = this->_split(node);
@@ -110,29 +107,45 @@ public:
         return node;
     }
 
+    // Time depends on number of elements
     Node* _min_node(Node* node) {
-        if (node != nullptr)
-            while (node->left != nullptr)
+        if (node != nullptr) {
+            while (node->left != nullptr) {
                 node = node->left;
 
+                //Adding 1 jump by pointer
+                this->_erase_ops++;
+            }
+        }
+
         return node;
     }
 
+    // Time depends on number of elements
     Node* _max_node(Node* node) {
-        if (node != nullptr)
-            while (node->right != nullptr)
+        if (node != nullptr) {
+            while (node->right != nullptr) {
                 node = node->right;
 
+                //Adding 1 jump by pointer
+                this->_erase_ops++;
+            }
+        }
+
         return node;
     }
 
-    ushort _min(ushort a, ushort b) {
+    unsigned int _min(unsigned int a, unsigned int b) {
         return (a > b) ? a : b;
     }
 
+    // Time depends on number of elements
     Node* _erase(T key, Node* node) {
         if (node == nullptr)
             return node;
+
+        // Adding 1 comparison
+        this->_erase_ops++;
 
         if (key < node->key)
             node->left = _erase(key, node->left);
@@ -160,8 +173,8 @@ public:
         Node* left = node->left;
         Node* right = node->right;
         if (left != nullptr || right != nullptr) {
-            ushort l_level = (node->left) ? node->left->level : 0;
-            ushort r_level = (node->right) ? node->right->level : 0;
+            unsigned int l_level = (node->left) ? node->left->level : 0;
+            unsigned int r_level = (node->right) ? node->right->level : 0;
 
             node->level = _min(l_level, r_level) + 1;
             if (r_level > node->level)
@@ -180,15 +193,26 @@ public:
         return node;
     }
 
+    void _delete(Node* node) {
+        if (node != nullptr) {
+            _delete(node->left);
+            _delete(node->right);
+            delete node;
+        }
+    }
+
+public:
     AATree() {
         this->root = nullptr;
     }
 
+    ~AATree() {
+        _delete(this->root);
+    }
+
     bool access(T key) {
-        Node* node = this->_access(key, this->root);
-        if (node != nullptr && node->key == key)
-            return true;
-        return false;
+        Node* node = this->_access(key);
+        return node ? true : false;
     }
 
     void insert(T key) {
@@ -199,8 +223,16 @@ public:
         this->root = this->_erase(key, this->root);
     }
 
-    void print_2D() {
-        this->_print_2D(this->root);
+    uint64_t get_insert_ops() {
+        return this->_insert_ops;
+    }
+
+    uint64_t get_access_ops() {
+        return this->_access_ops;
+    }
+
+    uint64_t get_erase_ops() {
+        return this->_erase_ops;
     }
 };
 
