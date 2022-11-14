@@ -20,9 +20,10 @@ private:
     } Node;
 
     Node* root;
-    unsigned int _insert_ops = 0;
-    unsigned int _access_ops = 0;
-    unsigned int _erase_ops = 0;
+    unsigned int _latest_insert_op = 0;
+    unsigned int _latest_access_op = 0;
+    unsigned int _latest_erase_op = 0;
+    unsigned int _total_access_op = 0;
 
     // O(1)
     Node* _right_rotate(Node* node) {
@@ -75,7 +76,8 @@ private:
 
         while (node != nullptr) {
             // Adding 1 comparison
-            this->_access_ops++;
+            this->_latest_access_op++;
+            this->_total_access_op++;
 
             if (key < node->key)
                 node = node->left;
@@ -94,7 +96,7 @@ private:
             return new Node(key);
 
         // Adding 1 comparison
-         this->_insert_ops++;
+         this->_latest_insert_op++;
 
         if (key < node->key)
             node->left = _insert(key, node->left);
@@ -114,7 +116,7 @@ private:
                 node = node->left;
 
                 //Adding 1 jump by pointer
-                this->_erase_ops++;
+                this->_latest_erase_op++;
             }
         }
 
@@ -128,7 +130,7 @@ private:
                 node = node->right;
 
                 //Adding 1 jump by pointer
-                this->_erase_ops++;
+                this->_latest_erase_op++;
             }
         }
 
@@ -145,7 +147,7 @@ private:
             return node;
 
         // Adding 1 comparison
-        this->_erase_ops++;
+        this->_latest_erase_op++;
 
         if (key < node->key)
             node->left = _erase(key, node->left);
@@ -211,28 +213,38 @@ public:
     }
 
     bool access(T key) {
+        this->_latest_access_op = 0;
+
         Node* node = this->_access(key);
         return node ? true : false;
     }
 
     void insert(T key) {
+        this->_latest_insert_op = 0;
+
         this->root = this->_insert(key, this->root);
     }
 
     void erase(T key) {
+        this->_latest_erase_op = 0;
+
         this->root = this->_erase(key, this->root);
     }
 
-    uint64_t get_insert_ops() {
-        return this->_insert_ops;
+    uint32_t get_insert_ops() {
+        return this->_latest_insert_op;
     }
 
-    uint64_t get_access_ops() {
-        return this->_access_ops;
+    uint32_t get_access_ops() {
+        return this->_latest_access_op;
     }
 
-    uint64_t get_erase_ops() {
-        return this->_erase_ops;
+    uint32_t get_access_ops_t() {
+        return this->_total_access_op;
+    }
+
+    uint32_t get_erase_ops() {
+        return this->_latest_erase_op;
     }
 };
 

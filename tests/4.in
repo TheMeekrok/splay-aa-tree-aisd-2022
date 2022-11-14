@@ -1,17 +1,18 @@
-i ab
-i aba
-i abacaba
-i abaca
-i abac
-i abacab
+// Correctness test
+i bb
+i bba
+i bbacaba
+i bbaca
+i bbac
+i bbacab
 
-a ab
-a aba
-a abacaba
-a abaca
-a abac
-a abacab
+a bb
+a bba
+a bbacaba
+a bbaca
+a bbac
+a bbacab
 
-a aaaaaaaaaaaaaaaaa
+a baaaaaaaaaaaaaaaa
 a bbbbbbbbbbbbbbbbb
-a abab
+a bbab

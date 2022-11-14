@@ -17,7 +17,12 @@ private:
         }
     } Node;
 
-    uint64_t _comparisons = 0;
+    unsigned int _latest_insert_op = 0;
+    unsigned int _latest_access_op = 0;
+    unsigned int _latest_erase_op = 0;
+    unsigned int _total_access_op = 0;
+
+    Node* root;
 
     void _left_rotate(Node* x) {
         if (x == this->root)
@@ -71,7 +76,7 @@ private:
         x->parent = g;
     }
 
-    void _splay(Node* node) {
+    void _splay(Node* node, int from) {
         if (node == this->root)
             return;
 
@@ -79,41 +84,71 @@ private:
         Node* g;
 
         while (node->parent != nullptr) {
+
+            // start counting operations
+            switch (from) {
+
+                // splay(x) from access(x)
+                case 0:
+                    this->_latest_access_op++;
+                    this->_total_access_op++;
+                    break;
+
+                // splay(x) from insert(x)
+                case 1:
+                    this->_latest_insert_op++;
+                    break;
+
+                // splay(x) from erase(x)
+                case 2:
+                    this->_latest_erase_op++;
+                    break;
+            }
+
             p = node->parent;
 
             if (p->left == node) {
+
                 if (p->parent != nullptr) {
                     g = p->parent;
+
                     //zig-zig right-right
                     if (g->left == p) {
                         this->_right_rotate(p);
                         this->_right_rotate(node);
                     }
+
                     //zig-zag right-left
                     else {
                         this->_right_rotate(node);
                         this->_left_rotate(node);
                     }
                 }
+
                 else {
                     //zig right
                     this->_right_rotate(node);
                 }
             }
+
             else {
+
                 if (p->parent != nullptr) {
                     g = p->parent;
+
                     //zig-zag left-right
                     if (g->left == p) {
                         this->_left_rotate(node);
                         this->_right_rotate(node);
                     }
+
                     //zig-zig left-left
                     else {
                         this->_left_rotate(p);
                         this->_left_rotate(node);
                     }
                 }
+
                 else {
                     //zig left
                     this->_left_rotate(node);
@@ -127,8 +162,8 @@ private:
             return node;
 
         while (node->right != nullptr) {
+            _latest_erase_op++;
             node = node->right;
-            this->_comparisons++;
         }
 
         return node;
@@ -137,67 +172,66 @@ private:
     Node* _join(Node* t1, Node* t2) {
         auto *t = new SplayTree(t1);
 
-        t->_splay(_max_elem(t->root));
+        t->_splay(_max_elem(t->root), 2);
         t->root->right = t2;
         t2->parent = t->root;
 
-        [[unlikely]] if (t->root->parent != nullptr)
+        if (t->root->parent != nullptr)
             t->root->parent = nullptr;
 
         return t->root;
     }
 
     Node* _access(T key) {
+
         Node* node = this->root;
 
         while (node != nullptr) {
+            _total_access_op += 1;
+            _latest_access_op += 1;
+
             if (key < node->key)
                 node = node->left;
             else if (key > node->key)
                 node = node->right;
             else {
-                this->_splay(node);
+                this->_splay(node, 0);
                 return node;
             }
-
-            this->_comparisons++;
         }
 
         return nullptr;
     }
 
-    const int PRINT_DIST = 5;
-    void _print_2D(Node* node, int space = 0) {
-        if (node == nullptr)
-            return;
+    // For erasing purposes
+    Node* _e_access(T key) {
+        Node* node = this->root;
 
-        space += PRINT_DIST;
+        while (node != nullptr) {
+            _latest_erase_op += 1;
 
-        _print_2D(node->right, space);
+            if (key < node->key)
+                node = node->left;
+            else if (key > node->key)
+                node = node->right;
+            else {
+                this->_splay(node, 2);
+                return node;
+            }
+        }
 
-        std::cout << std::endl;
-
-        for (int i = PRINT_DIST; i < space; i++)
-            std::cout << " ";
-
-        std::cout << node->key << "\n";
-
-        _print_2D(node->left, space);
+        return nullptr;
     }
 
-    void _print(Node *node) {
-        if (node == nullptr)
-            return;
-
-        _print(node->left);
-        std::cout << "p: " << ((node->parent == nullptr) ? 0 : node->parent->key)
-                  << "(" << node->key << ")" << std::endl;
-        _print(node->right);
+    void _delete(Node* node) {
+        if (node != nullptr) {
+            _delete(node->left);
+            _delete(node->right);
+            delete node;
+        }
     }
 
 public:
-    Node* root;
-
     SplayTree() {
         this->root = nullptr;
     }
@@ -206,7 +240,13 @@ public:
         this->root = root;
     }
 
+    ~SplayTree() {
+        this->_delete(this->root);
+    }
+
     bool access(T key) {
+        this->_latest_access_op = 0;
+        
         Node* result = this->_access(key);
 
         if (result != nullptr && result->key == key)
@@ -216,8 +256,11 @@ public:
     }
 
     void insert(T key) {
+        this->_latest_insert_op = 0;
+
         if (this->root == nullptr) {
             this->root = new Node(key);
+            this->_latest_insert_op += 1;
             return;
         }
 
@@ -225,6 +268,8 @@ public:
         Node* parent = nullptr;
 
         while (node != nullptr) {
+            this->_latest_insert_op += 1;
+
             parent = node;
 
             if (key < node->key)
@@ -234,7 +279,6 @@ public:
             else
                 return;
 
-            this->_comparisons++;
         }
 
         Node* new_node = new Node(key, parent);
@@ -245,11 +289,13 @@ public:
         else if (parent->key < node->key)
             parent->right = node;
 
-        this->_splay(node);
+        this->_splay(node, 1);
     }
 
     bool erase(T key) {
-        Node* node = this->_access(key);
+        this->_latest_erase_op = 0;
+        Node* node = this->_e_access(key);
+
         if (node == nullptr)
             return false;
 
@@ -275,24 +321,24 @@ public:
 
         delete node;
 
-        if (parent != nullptr)
-            this->_splay(parent);
-
         return true;
     }
 
-    uint64_t get_comparisons() {
-        return this->_comparisons;
+    uint32_t get_insert_ops() {
+        return this->_latest_insert_op;
     }
 
-    void print_2D() {
-        this->_print_2D(this->root);
+    uint32_t get_access_ops() {
+        return this->_latest_access_op;
     }
 
-    void print() {
-        this->_print(this->root);
+    uint32_t get_access_ops_t() {
+        return this->_total_access_op;
     }
 
+    uint32_t get_erase_ops() {
+        return this->_latest_erase_op;
+    }
 };
 
 #endif //SPLAY_AA_TREE_SPLAY_TREE_H
