@@ -18,6 +18,7 @@ int random_int(int l_bound, int r_bound) {
     return uniform_dist(e1);
 }
 
+// Генерация одинаковых строк по двум сидам
 string next_psd_rnd_string(int seed_1, int seed_2 = 0) {
     string random = "";
     
@@ -32,6 +33,7 @@ string next_psd_rnd_string(int seed_1, int seed_2 = 0) {
     return random;
 }
 
+// Полностью случайная генерация строк
 string next_rnd_string() {
     string random = "";
 

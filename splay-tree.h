@@ -20,7 +20,6 @@ private:
     unsigned int _latest_insert_op = 0;
     unsigned int _latest_access_op = 0;
     unsigned int _latest_erase_op = 0;
-    unsigned int _total_access_op = 0;
 
     Node* root;
 
@@ -91,7 +90,6 @@ private:
                 // splay(x) from access(x)
                 case 0:
                     this->_latest_access_op++;
-                    this->_total_access_op++;
                     break;
 
                 // splay(x) from insert(x)
@@ -187,7 +185,6 @@ private:
         Node* node = this->root;
 
         while (node != nullptr) {
-            _total_access_op += 1;
             _latest_access_op += 1;
 
             if (key < node->key)
@@ -330,10 +327,6 @@ public:
 
     uint32_t get_access_ops() {
         return this->_latest_access_op;
-    }
-
-    uint32_t get_access_ops_t() {
-        return this->_total_access_op;
     }
 
     uint32_t get_erase_ops() {

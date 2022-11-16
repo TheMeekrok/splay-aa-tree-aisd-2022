@@ -23,9 +23,7 @@ private:
     unsigned int _latest_insert_op = 0;
     unsigned int _latest_access_op = 0;
     unsigned int _latest_erase_op = 0;
-    unsigned int _total_access_op = 0;
 
-    // O(1)
     Node* _right_rotate(Node* node) {
         Node* left = node->left;
         node->left = left->right;
@@ -34,7 +32,6 @@ private:
         return left;
     }
 
-    // O(1)
     Node* _left_rotate(Node* node) {
         Node* right = node->right;
         node->right = right->left;
@@ -43,7 +40,6 @@ private:
         return right;
     }
 
-    // O(1)
     Node* _skew(Node* node) {
         if (node == nullptr)
             return node;
@@ -56,7 +52,6 @@ private:
         return node;
     }
 
-    // O(1)
     Node* _split(Node* node) {
         if (node == nullptr)
             return node;
@@ -70,14 +65,11 @@ private:
         return node;
     }
 
-    // Time depends on number of elements
     Node* _access(T key) {
         Node* node = this->root;
 
         while (node != nullptr) {
-            // Adding 1 comparison
             this->_latest_access_op++;
-            this->_total_access_op++;
 
             if (key < node->key)
                 node = node->left;
@@ -90,12 +82,10 @@ private:
         return nullptr;
     }
 
-    // Time depends on number of elements
     Node* _insert(T key, Node* node) {
         if (node == nullptr)
             return new Node(key);
 
-        // Adding 1 comparison
          this->_latest_insert_op++;
 
         if (key < node->key)
@@ -109,13 +99,11 @@ private:
         return node;
     }
 
-    // Time depends on number of elements
     Node* _min_node(Node* node) {
         if (node != nullptr) {
             while (node->left != nullptr) {
                 node = node->left;
 
-                //Adding 1 jump by pointer
                 this->_latest_erase_op++;
             }
         }
@@ -123,13 +111,11 @@ private:
         return node;
     }
 
-    // Time depends on number of elements
     Node* _max_node(Node* node) {
         if (node != nullptr) {
             while (node->right != nullptr) {
                 node = node->right;
 
-                //Adding 1 jump by pointer
                 this->_latest_erase_op++;
             }
         }
@@ -141,12 +127,10 @@ private:
         return (a > b) ? a : b;
     }
 
-    // Time depends on number of elements
     Node* _erase(T key, Node* node) {
         if (node == nullptr)
             return node;
 
-        // Adding 1 comparison
         this->_latest_erase_op++;
 
         if (key < node->key)
