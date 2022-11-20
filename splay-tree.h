@@ -75,7 +75,7 @@ private:
         x->parent = g;
     }
 
-    void _splay(Node* node, int from) {
+    void _splay(Node* node) {
         if (node == this->root)
             return;
 
@@ -83,26 +83,6 @@ private:
         Node* g;
 
         while (node->parent != nullptr) {
-
-            // start counting operations
-            switch (from) {
-
-                // splay(x) from access(x)
-                case 0:
-                    this->_latest_access_op++;
-                    break;
-
-                // splay(x) from insert(x)
-                case 1:
-                    this->_latest_insert_op++;
-                    break;
-
-                // splay(x) from erase(x)
-                case 2:
-                    this->_latest_erase_op++;
-                    break;
-            }
-
             p = node->parent;
 
             if (p->left == node) {
@@ -160,7 +140,6 @@ private:
             return node;
 
         while (node->right != nullptr) {
-            _latest_erase_op++;
             node = node->right;
         }
 
@@ -170,7 +149,7 @@ private:
     Node* _join(Node* t1, Node* t2) {
         auto *t = new SplayTree(t1);
 
-        t->_splay(_max_elem(t->root), 2);
+        t->_splay(_max_elem(t->root));
         t->root->right = t2;
         t2->parent = t->root;
 
@@ -192,7 +171,7 @@ private:
             else if (key > node->key)
                 node = node->right;
             else {
-                this->_splay(node, 0);
+                this->_splay(node);
                 return node;
             }
         }
@@ -212,7 +191,7 @@ private:
             else if (key > node->key)
                 node = node->right;
             else {
-                this->_splay(node, 2);
+                this->_splay(node);
                 return node;
             }
         }
@@ -286,7 +265,7 @@ public:
         else if (parent->key < node->key)
             parent->right = node;
 
-        this->_splay(node, 1);
+        this->_splay(node);
     }
 
     bool erase(T key) {

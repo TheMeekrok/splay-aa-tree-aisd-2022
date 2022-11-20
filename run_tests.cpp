@@ -23,7 +23,7 @@
 #define RANDOM_ACCESS_UNIT 16
 #define RECENT_ACCESS_UNIT 21
 
-#define ALLOWABLE_STD_DEVIATION_INC 0.0001
+#define ALLOWABLE_STD_DEVIATION_INC 0.00001
 #define MIN_ITERATIONS 10
 
 using namespace std;
@@ -66,16 +66,16 @@ void run_splay() {
 
         // Логирование
         if (test == INSERT_UNIT)
-            _log << "INSERT_UNIT\n";
+            _log << "INSERT\n";
 
         else if (test == ERASE_UNIT)
-            _log << "ERASE_UNIT\n";
+            _log << "ERASE\n";
 
         else if (test == RANDOM_ACCESS_UNIT)
-            _log << "RANDOM_ACCESS_UNIT\n";
+            _log << "RANDOM ACCESS\n";
         
         else if (test == RECENT_ACCESS_UNIT)
-            _log << "RECENT_ACCESS_UNIT \n";
+            _log << "RECENT ACCESS\n";
 
         // Время начала теста
         auto start = high_resolution_clock::now();
@@ -192,7 +192,6 @@ void run_splay() {
                 // За удалением 1 элемента следует вставка 1 элемента
                 string key = next_rnd_string();
                 Splay->insert(key);
-
                 v_elements.push_back(key);
 
                 operations_time.push_back(Splay->get_erase_ops());
@@ -211,7 +210,6 @@ void run_splay() {
             for (int i = 0; i < N - 1; ++i) {
                 string key = next_rnd_string();
                 Splay->insert(key);
-                v_elements.push_back(key);
             }
 
             vector<double> operations_time;
@@ -232,7 +230,6 @@ void run_splay() {
                 string key = next_rnd_string();
                 Splay->insert(key);
                 Splay->erase(key);
-                v_elements.push_back(key);
 
                 operations_time.push_back(Splay->get_insert_ops());
                 size = operations_time.size();
@@ -262,8 +259,6 @@ void run_splay() {
                 if (command == "i") {
                     input >> key;
                     Splay->insert(key);
-
-                    v_elements.push_back(key);
                 }
 
                 // Получение доступа
@@ -289,14 +284,8 @@ void run_splay() {
         auto stop = high_resolution_clock::now();
         auto execution_time = duration_cast<microseconds>(stop - start);
 
-        // removing duplicates in array
-        std::sort(v_elements.begin(), v_elements.end());
-        auto last = unique(v_elements.begin(), v_elements.end());
-        v_elements.erase(last, v_elements.end());
-
         std::cout << "Test " << test
             << ((is_passed) ? "" : " not") << " passed. \n" 
-            << "Total elements (n): " << v_elements.size() << "\n"
             << "Total operations per last: \n"
             << "- insert: " << Splay->get_insert_ops() << "\n"
             << "- access: " << Splay->get_access_ops() << "\n"
@@ -325,16 +314,16 @@ void run_aa() {
 
         // Логирование
         if (test == INSERT_UNIT)
-            _log << "INSERT_UNIT\n";
+            _log << "INSERT\n";
 
         else if (test == ERASE_UNIT)
-            _log << "ERASE_UNIT\n";
+            _log << "ERASE\n";
 
         else if (test == RANDOM_ACCESS_UNIT)
-            _log << "RANDOM_ACCESS_UNIT\n";
+            _log << "RANDOM ACCESS\n";
         
         else if (test == RECENT_ACCESS_UNIT)
-            _log << "RECENT_ACCESS_UNIT \n";
+            _log << "RECENT ACCESS\n";
 
         // Время начала теста
         auto start = high_resolution_clock::now();
@@ -451,7 +440,6 @@ void run_aa() {
                 // За удалением 1 элемента следует вставка 1 элемента
                 string key = next_rnd_string();
                 AA->insert(key);
-
                 v_elements.push_back(key);
 
                 operations_time.push_back(AA->get_erase_ops());
@@ -470,7 +458,6 @@ void run_aa() {
             for (int i = 0; i < N - 1; ++i) {
                 string key = next_rnd_string();
                 AA->insert(key);
-                v_elements.push_back(key);
             }
 
             vector<double> operations_time;
@@ -491,7 +478,6 @@ void run_aa() {
                 string key = next_rnd_string();
                 AA->insert(key);
                 AA->erase(key);
-                v_elements.push_back(key);
 
                 operations_time.push_back(AA->get_insert_ops());
                 size = operations_time.size();
@@ -521,8 +507,6 @@ void run_aa() {
                 if (command == "i") {
                     input >> key;
                     AA->insert(key);
-
-                    v_elements.push_back(key);
                 }
 
                 // Получение доступа
@@ -548,14 +532,8 @@ void run_aa() {
         auto stop = high_resolution_clock::now();
         auto execution_time = duration_cast<microseconds>(stop - start);
 
-        // removing duplicates in array
-        std::sort(v_elements.begin(), v_elements.end());
-        auto last = unique(v_elements.begin(), v_elements.end());
-        v_elements.erase(last, v_elements.end());
-
         std::cout << "Test " << test
             << ((is_passed) ? "" : " not") << " passed. \n" 
-            << "Total elements (n): " << v_elements.size() << "\n"
             << "Total operations per last: \n"
             << "- insert: " << AA->get_insert_ops() << "\n"
             << "- access: " << AA->get_access_ops() << "\n"

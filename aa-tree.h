@@ -103,8 +103,6 @@ private:
         if (node != nullptr) {
             while (node->left != nullptr) {
                 node = node->left;
-
-                this->_latest_erase_op++;
             }
         }
 
@@ -115,8 +113,6 @@ private:
         if (node != nullptr) {
             while (node->right != nullptr) {
                 node = node->right;
-
-                this->_latest_erase_op++;
             }
         }
 

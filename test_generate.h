@@ -18,28 +18,12 @@ int random_int(int l_bound, int r_bound) {
     return uniform_dist(e1);
 }
 
-// Генерация одинаковых строк по двум сидам
-string next_psd_rnd_string(int seed_1, int seed_2 = 0) {
-    string random = "";
-    
-    for (int i = 0; i < STRING_LENGTH; ++i) {
-        uint64_t seed = (uint64_t(seed_1 * seed_2) ^ MAGIC_CONST) << i;
-    
-        srand(seed);
-        int pos = rand() % (r_bound - l_bound) + l_bound;
-        random += char(pos);
-    }
-
-    return random;
-}
-
 // Полностью случайная генерация строк
 string next_rnd_string() {
     string random = "";
 
-    for (int i = 0; i < STRING_LENGTH; ++i) {
+    for (int i = 0; i < STRING_LENGTH; ++i)
         random += char(random_int(l_bound, r_bound));
-    }
 
     return random;
 }
