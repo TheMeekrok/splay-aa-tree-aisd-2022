@@ -30,28 +30,28 @@ using namespace std;
 using namespace std::chrono;
 
 // Вычисление среднего арифметического
-double get_average(vector<double> &operations_time, int N) {
+double get_average(vector<double> &operations_time) {
     double average = 0;
 
     for (double elem: operations_time)
         average += elem;
 
-    return average /= N;
+    return average /= double(operations_time.size());
 }
 
 // Вычисление среднеквадратичного отклонения
-double get_average_deviation(vector<double> &operations_time, int N) {
-    double average = get_average(operations_time, N);
+double get_average_deviation(vector<double> &operations_time) {
+    double average = get_average(operations_time);
     double average_deviation = 0;
 
     for (double elem: operations_time) 
         average_deviation += pow(elem - average, 2);
     
-    return sqrt(average_deviation / N);
+    return sqrt(average_deviation / double(operations_time.size()));
 }
 
 void run_splay() {
-    // Поток для записы выходных данных
+    // Поток для записи выходных данных
     ofstream _log("./docs/splay_log.out");
 
     for (int test = 1; test <= TESTS; ++test) {
@@ -66,16 +66,16 @@ void run_splay() {
 
         // Логирование
         if (test == INSERT_UNIT)
-            _log << "INSERT\n";
+            _log << "Вставка\n";
 
         else if (test == ERASE_UNIT)
-            _log << "ERASE\n";
+            _log << "Удаление\n";
 
         else if (test == RANDOM_ACCESS_UNIT)
-            _log << "RANDOM ACCESS\n";
+            _log << "Случайный доступ\n";
         
         else if (test == RECENT_ACCESS_UNIT)
-            _log << "RECENT ACCESS\n";
+            _log << "Доступ к недавним элементам\n";
 
         // Время начала теста
         auto start = high_resolution_clock::now();
@@ -92,7 +92,6 @@ void run_splay() {
             }
 
             vector<double> operations_time;
-            size_t size = 0;
 
             double prev_average_deviation = 1, average_deviation = 0;
             int iter = 0;
@@ -112,14 +111,12 @@ void run_splay() {
                 Splay->access(v_elements[index]);
                 operations_time.push_back(Splay->get_access_ops());
 
-                size = operations_time.size();
-
-                average_deviation = get_average_deviation(operations_time, size);
+                average_deviation = get_average_deviation(operations_time);
 
                 iter++;
             }
 
-            _log << N << " " << get_average(operations_time, size) << "\n";
+            _log << N << " " << get_average(operations_time) << "\n";
         }
 
         else if (test >= RANDOM_ACCESS_UNIT) {
@@ -134,7 +131,6 @@ void run_splay() {
 
             // Поиск полностью случайного элемента
             vector<double> operations_time;
-            size_t size = 0;
 
             double prev_average_deviation = 1, average_deviation = 0;
             int iter = 0;
@@ -152,14 +148,12 @@ void run_splay() {
                 Splay->access(v_elements[index]);
                 operations_time.push_back(Splay->get_access_ops());
 
-                size = operations_time.size();
-
-                average_deviation = get_average_deviation(operations_time, size);
+                average_deviation = get_average_deviation(operations_time);
 
                 iter++;
             }
 
-            _log << N << " " << get_average(operations_time, size) << "\n";
+            _log << N << " " << get_average(operations_time) << "\n";
         }
 
         else if (test >= ERASE_UNIT) {
@@ -173,7 +167,6 @@ void run_splay() {
             }
 
             vector<double> operations_time;
-            size_t size = 0;
 
             double prev_average_deviation = 1, average_deviation = 0;
             int iter = 0;
@@ -195,12 +188,11 @@ void run_splay() {
                 v_elements.push_back(key);
 
                 operations_time.push_back(Splay->get_erase_ops());
-                size = operations_time.size();
 
                 iter++;
             }
 
-            _log << N << " " << get_average(operations_time, size) << "\n";
+            _log << N << " " << get_average(operations_time) << "\n";
         }
             
         else if (test >= INSERT_UNIT) {
@@ -213,7 +205,6 @@ void run_splay() {
             }
 
             vector<double> operations_time;
-            size_t size = 0;
 
             double prev_average_deviation = 1, average_deviation = 0;
             int iter = 0;
@@ -232,14 +223,13 @@ void run_splay() {
                 Splay->erase(key);
 
                 operations_time.push_back(Splay->get_insert_ops());
-                size = operations_time.size();
 
-                average_deviation = get_average_deviation(operations_time, size);
+                average_deviation = get_average_deviation(operations_time);
 
                 iter++;
             }
 
-            _log << N << " " << get_average(operations_time, size) << "\n";
+            _log << N << " " << get_average(operations_time) << "\n";
         }
 
         // Ручные тесты на корректность
@@ -299,7 +289,7 @@ void run_splay() {
 }
 
 void run_aa() {
-    // Поток для записы выходных данных
+    // Поток для записи выходных данных
     ofstream _log("./docs/aa_log.out");
 
     for (int test = 1; test <= TESTS; ++test) {
@@ -314,16 +304,16 @@ void run_aa() {
 
         // Логирование
         if (test == INSERT_UNIT)
-            _log << "INSERT\n";
+            _log << "Вставка\n";
 
         else if (test == ERASE_UNIT)
-            _log << "ERASE\n";
+            _log << "Удаление\n";
 
         else if (test == RANDOM_ACCESS_UNIT)
-            _log << "RANDOM ACCESS\n";
+            _log << "Получение доступа\n";
         
         else if (test == RECENT_ACCESS_UNIT)
-            _log << "RECENT ACCESS\n";
+            _log << "Получение доступа к случайным элементам\n";
 
         // Время начала теста
         auto start = high_resolution_clock::now();
@@ -360,14 +350,12 @@ void run_aa() {
                 AA->access(v_elements[index]);
                 operations_time.push_back(AA->get_access_ops());
 
-                size = operations_time.size();
-
-                average_deviation = get_average_deviation(operations_time, size);
+                average_deviation = get_average_deviation(operations_time);
 
                 iter++;
             }
 
-            _log << N << " " << get_average(operations_time, size) << "\n";
+            _log << N << " " << get_average(operations_time) << "\n";
         }
 
         else if (test >= RANDOM_ACCESS_UNIT) {
@@ -400,14 +388,12 @@ void run_aa() {
                 AA->access(v_elements[index]);
                 operations_time.push_back(AA->get_access_ops());
 
-                size = operations_time.size();
-
-                average_deviation = get_average_deviation(operations_time, size);
+                average_deviation = get_average_deviation(operations_time);
 
                 iter++;
             }
 
-            _log << N << " " << get_average(operations_time, size) << "\n";
+            _log << N << " " << get_average(operations_time) << "\n";
         }
 
         else if (test >= ERASE_UNIT) {
@@ -421,7 +407,6 @@ void run_aa() {
             }
 
             vector<double> operations_time;
-            size_t size = 0;
 
             double prev_average_deviation = 1, average_deviation = 0;
             int iter = 0;
@@ -443,12 +428,11 @@ void run_aa() {
                 v_elements.push_back(key);
 
                 operations_time.push_back(AA->get_erase_ops());
-                size = operations_time.size();
 
                 iter++;
             }
 
-            _log << N << " " << get_average(operations_time, size) << "\n";
+            _log << N << " " << get_average(operations_time) << "\n";
         }
             
         else if (test >= INSERT_UNIT) {
@@ -461,7 +445,6 @@ void run_aa() {
             }
 
             vector<double> operations_time;
-            size_t size = 0;
 
             double prev_average_deviation = 1, average_deviation = 0;
             int iter = 0;
@@ -480,14 +463,13 @@ void run_aa() {
                 AA->erase(key);
 
                 operations_time.push_back(AA->get_insert_ops());
-                size = operations_time.size();
 
-                average_deviation = get_average_deviation(operations_time, size);
+                average_deviation = get_average_deviation(operations_time);
 
                 iter++;
             }
 
-            _log << N << " " << get_average(operations_time, size) << "\n";
+            _log << N << " " << get_average(operations_time) << "\n";
         }
 
         // Ручные тесты на корректность

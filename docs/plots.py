@@ -28,13 +28,15 @@ for i in range(4):
             y_list.append(int(N))
             log2_list.append(math.log2(int(N)))
 
-    plt.xlabel('Количество операций (среднее)')
-    plt.ylabel('Количество элементов')
+    plt.ylabel('Количество операций (среднее)')
+    plt.xlabel('Количество элементов')
     plt.xscale('log')
 
-    plt.plot(y_list, log2_list, label='log2(N)', color="black", marker="o")
+    plt.plot(y_list, log2_list, label='log₂(N)', color="black", marker="o")
     plt.plot(y_list, aa_list, label='AA Дерево', color="red")
     plt.plot(y_list, splay_list, label='Splay Дерево', color="blue")
     plt.legend()
+
+    plt.grid(color='black', linestyle='-', linewidth=0.5)
 
     plt.show()
