@@ -1,7 +1,23 @@
 #ifndef SPLAY_AA_TREE_AA_TREE_H
 #define SPLAY_AA_TREE_AA_TREE_H
 
-#include <iostream>
+/* Этот заголовочный файл содержит C++ библиотеку
+* 
+* Импорт в проект:
+* #include <aa-tree.h>
+*
+* Создание нового дерева:
+* auto AA = new AATree<string>();
+* 
+* Вставка:
+* AA->insert("abacada");
+*
+* Удаление:
+* AA->erase("abacada");
+*
+* Поиск:
+* AA->access("abacada");
+*/
 
 template <typename T> class AATree {
 private:

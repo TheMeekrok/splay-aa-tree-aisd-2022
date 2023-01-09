@@ -1,6 +1,24 @@
 #ifndef SPLAY_AA_TREE_SPLAY_TREE_H
 #define SPLAY_AA_TREE_SPLAY_TREE_H
 
+/* Этот заголовочный файл содержит C++ библиотеку
+* 
+* Импорт в проект:
+* #include <splay-tree.h>
+*
+* Создание нового дерева:
+* auto Splay = new SplayTree<string>();
+* 
+* Вставка:
+* Splay->insert("abacada");
+*
+* Удаление:
+* Splay->erase("abacada");
+*
+* Поиск:
+* Splay->access("abacada");
+*/
+
 template <typename T> class SplayTree {
 private:
     typedef struct Node {
@@ -179,7 +197,6 @@ private:
         return nullptr;
     }
 
-    // For erasing purposes
     Node* _e_access(T key) {
         Node* node = this->root;
 
