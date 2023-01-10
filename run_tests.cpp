@@ -9,8 +9,8 @@
 #include <set>
 #include <vector>
 
-#include "splay-tree.h"
-#include "aa-tree.h"
+#include "splay_tree.h"
+#include "aa_tree.h"
 #include "test_generate.h"
 
 #define INPUT_F ".in"
@@ -232,7 +232,7 @@ void run_splay() {
             _log << N << " " << get_average(operations_time) << "\n";
         }
 
-        // Ручные тесты на корректность
+        // Тесты на корректность
         else {
             // Потоки ввода/вывода
             ifstream input("./tests/" + to_string(test) + INPUT_F);

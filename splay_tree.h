@@ -108,13 +108,11 @@ private:
                 if (p->parent != nullptr) {
                     g = p->parent;
 
-                    //zig-zig right-right
                     if (g->left == p) {
                         this->_right_rotate(p);
                         this->_right_rotate(node);
                     }
 
-                    //zig-zag right-left
                     else {
                         this->_right_rotate(node);
                         this->_left_rotate(node);
@@ -122,7 +120,6 @@ private:
                 }
 
                 else {
-                    //zig right
                     this->_right_rotate(node);
                 }
             }
@@ -132,13 +129,11 @@ private:
                 if (p->parent != nullptr) {
                     g = p->parent;
 
-                    //zig-zag left-right
                     if (g->left == p) {
                         this->_left_rotate(node);
                         this->_right_rotate(node);
                     }
 
-                    //zig-zig left-left
                     else {
                         this->_left_rotate(p);
                         this->_left_rotate(node);
@@ -146,7 +141,6 @@ private:
                 }
 
                 else {
-                    //zig left
                     this->_left_rotate(node);
                 }
             }
